@@ -1,5 +1,6 @@
 package com.imageProcessor.imageProcessor.file;
 
+import com.imageProcessor.imageProcessor.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -17,22 +18,24 @@ public class File {
     private String filepath;
 
 
-//    @ManyToOne //this will be added once we have a user class
-//    User user;
+    @ManyToOne //this will be added once we have a user class
+    User user;
 
 
     public File() {
     }
 
-    public File(Long id, String filename, String filepath) {
+    public File(Long id, String filename, String filepath,  User user) {
         this.id = id;
         this.filename = filename;
         this.filepath = filepath;
+        this.user = user;
     }
 
-    public File(String filename, String filepath) {
+    public File(String filename, String filepath,  User user) {
         this.filename = filename;
         this.filepath = filepath;
+        this.user = user;
     }
 
     public Long getId() {
