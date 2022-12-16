@@ -61,4 +61,21 @@ public class FileService {
             throw new ResponseStatusException( HttpStatus.NOT_FOUND, "User not found");
         }
     }
+
+    public File getOneUserFileByName(Long userId, String filename){
+        Boolean userExists = true;
+
+        if(userExists){
+            Optional<File> foundFile =  fileRepository.findByFilename(filename);//fileRepository.findByUserIdAndFilename(userId, filename) when implemented
+            return foundFile.get(); //We should do a check if the file exists as well, this can throw an exception
+        }else{
+            //user not found/validation failed, return an error
+            throw new ResponseStatusException( HttpStatus.NOT_FOUND, "User not found");
+        }
+    }
+
+    public Boolean deleteFileFromDatabase(File file){
+        fileRepository.delete(file);
+        return true;
+    }
 }

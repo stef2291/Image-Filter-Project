@@ -17,7 +17,7 @@ public class File {
     private String filepath;
 
 
-//    @ManyToOne //this will be added once we have a user clasee
+//    @ManyToOne //this will be added once we have a user class
 //    User user;
 
 

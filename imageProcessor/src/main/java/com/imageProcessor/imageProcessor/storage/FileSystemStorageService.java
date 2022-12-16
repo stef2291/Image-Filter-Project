@@ -3,10 +3,7 @@ package com.imageProcessor.imageProcessor.storage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +34,7 @@ public class FileSystemStorageService implements StorageService {
             Path destinationFile = this.rootLocation.resolve(
                             Paths.get(file.getOriginalFilename()))
                     .normalize().toAbsolutePath();
-            String pathString = destinationFile.toString();
+            String pathString = rootLocation.resolve(file.getOriginalFilename()).toString();//destinationFile.toString();
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 // This is a security check
                 throw new StorageException(
@@ -92,8 +89,20 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void deleteAll() {
-        FileSystemUtils.deleteRecursively(rootLocation.toFile());
+    public void deleteAll() {FileSystemUtils.deleteRecursively(rootLocation.toFile());  }
+
+    @Override
+    public void deleteOne(Path filepath) throws IOException {
+        try {
+            Files.delete(filepath);
+        } catch (NoSuchFileException e) {
+            throw new NoSuchFileException("No such file");
+        } catch (DirectoryNotEmptyException e) {
+            throw new DirectoryNotEmptyException("No such file");
+        } catch (IOException e) {
+            // File permission problems are caught here.
+            throw new IOException("No permission to delete file");
+        }
     }
 
     @Override
