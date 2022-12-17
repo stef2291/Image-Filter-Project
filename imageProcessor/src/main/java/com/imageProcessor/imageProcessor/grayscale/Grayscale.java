@@ -10,7 +10,7 @@ public class Grayscale {
     public static void main(String args[])throws IOException{
     }
 
-    public static void createGrayscale(String filepath){
+    public static File createGrayscale(String filepath) throws IOException{
 
         try{
             //read image
@@ -44,14 +44,12 @@ public class Grayscale {
             }
 
             //finally, save the image, append black_and_white to the filename
-            try{
-                f = new File(filepath.substring(0, filepath.length()-5) + "black_and_white.jpg");
+
+                f = new File(filepath.substring(0, filepath.length()-5) + "_black_and_white.jpg");
                 ImageIO.write(img, "jpg", f);
-            }catch(IOException e){
-                System.out.println(e);
-            }
+                return f;
         }catch(IOException e){
-            System.out.println(e);
+            throw new IOException();
         }
     }
 }

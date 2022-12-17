@@ -49,18 +49,21 @@ public class FileController {
 
     //post an image
     @PostMapping("/{userId}") //Here we need to do the extra step of creating a new file model in database
-    public String handleFileUpload(@RequestBody MultipartFile file,
+    public ResponseEntity<Resource> handleFileUpload(@RequestBody MultipartFile file,
                                    RedirectAttributes redirectAttributes,
-                                   @PathVariable (value = "userId") Long userId) {
+                                   @PathVariable (value = "userId") Long userId) throws IOException {
         String filepath = fileService.saveFile(file, userId);
 //        storageService.store(file); //do this in the fileService - makes more sense
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-        Grayscale.createGrayscale(filepath);
+//        Grayscale.createGrayscale(filepath);
 
-            return "success!!";
-//        return postBlackAndWhiteImage(file.getOriginalFilename(), 1L);
+        Resource fileToSend = storageService.loadAsResource(Grayscale.createGrayscale(filepath).getName());
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + fileToSend.getFilename() + "\"").body(fileToSend);
+
+//            return "success!!";
     }
 
     //delete an image
