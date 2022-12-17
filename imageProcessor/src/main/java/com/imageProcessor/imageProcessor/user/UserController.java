@@ -3,6 +3,7 @@ package com.imageProcessor.imageProcessor.user;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,7 +39,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/")
+    @PostMapping("/create")
     public User createUser(@Valid @RequestBody User user){
         userService.createUser(user);
         return user;
@@ -52,14 +53,22 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public User logOutUser(@RequestBody Map<String, String> user){
-        User loggedInUser = userService.logOut(user.get("email"), user.get("password"));
+    public Boolean logOutUser(@RequestBody Map<String, Long> user){
+//        User loggedInUser = userService.logOut(user.get("email"), user.get("password"));
 
-        return loggedInUser; //this will need to be changed once we've done our DB update
+        //we are logging out using given Id
+        Optional<User> foundUser = userService.findById(user.get("userId"));
+        if(foundUser.isPresent()){
+            userService.logOut(foundUser.get().getEmail(), foundUser.get().getPassword());
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/delete")
     public Boolean deleteUser(@RequestBody Map<String, String> user){
+
         Boolean success = userService.deleteUser(user.get("email"), user.get("username"), user.get("password"));
         return success;
     }
