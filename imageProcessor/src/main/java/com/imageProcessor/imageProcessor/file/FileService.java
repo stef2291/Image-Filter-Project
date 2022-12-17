@@ -34,12 +34,14 @@ public class FileService {
             File newFile = new File(filename, filePath, userExists.get()); //we will also associate with the user here once implemented
 
             fileRepository.save(newFile);
+
+            return filePath;
         }else{
             //user not found/validation failed, return an error
             throw new ResponseStatusException( HttpStatus.NOT_FOUND, "User not found");
         }
 
-        return "success";
+
     }
 
     public List<File> getAllUserFiles(Long userId){

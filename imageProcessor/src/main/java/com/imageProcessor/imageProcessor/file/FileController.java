@@ -1,5 +1,6 @@
 package com.imageProcessor.imageProcessor.file;
 
+import com.imageProcessor.imageProcessor.grayscale.Grayscale;
 import com.imageProcessor.imageProcessor.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -51,11 +52,12 @@ public class FileController {
     public String handleFileUpload(@RequestBody MultipartFile file,
                                    RedirectAttributes redirectAttributes,
                                    @PathVariable (value = "userId") Long userId) {
-        fileService.saveFile(file, userId);
+        String filepath = fileService.saveFile(file, userId);
 //        storageService.store(file); //do this in the fileService - makes more sense
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
+        Grayscale.createGrayscale(filepath);
 
             return "success!!";
 //        return postBlackAndWhiteImage(file.getOriginalFilename(), 1L);
