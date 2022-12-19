@@ -26,12 +26,18 @@ public class UserController  {
     //checks if username and password match the database, sends success or failure
     @GetMapping("/login") //
     public String login(@RequestParam String username, @RequestParam String password) {
+
+        userRepo.findByUsername(username);
+
         return "";
     }
 
     @DeleteMapping("/delete")
-    public String deleteUser(@RequestParam String username) {
-        return  "";
+    public String deleteUser(@RequestParam String username, String password) {
+
+        userRepo.deleteByUsername(username);
+
+        return "redirect:/mainPage";
     }
 
 }
