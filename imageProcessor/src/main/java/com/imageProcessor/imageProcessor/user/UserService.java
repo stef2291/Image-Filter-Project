@@ -50,7 +50,7 @@ public class UserService {
         //compare password
         //if password matches, update user to loggedIn
         if(matchedUser.get().getPassword().equals(password)){
-            if(matchedUser.get().getIsLoggedIn() == false){
+            if(matchedUser.get().getIsLoggedIn() == true){
                 //user already logged out, send 406 status
                 throw new ResponseStatusException( HttpStatus.NOT_ACCEPTABLE, "User already logged out");
             }
