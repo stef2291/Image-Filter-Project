@@ -1,14 +1,14 @@
 package com.imageProcessor.imageProcessor.userManagement.repository;
 
-import com.imageProcessor.imageProcessor.userManagement.model.User;
+import com.imageProcessor.imageProcessor.userManagement.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface UserRepo extends JpaRepository<User, Long> {
+public interface UserRepo extends JpaRepository<AppUser, Long> {
 
-    List<User> findByUsername(String username);
-    List<User> deleteByUsername(String username);
+    List<AppUser> findByUsername(String username);
+    List<AppUser> deleteByUsername(String username);
 //    public String createUser (String username, String password, String email);
 
 }

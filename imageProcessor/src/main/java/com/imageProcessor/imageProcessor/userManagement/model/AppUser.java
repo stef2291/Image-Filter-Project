@@ -2,9 +2,10 @@ package com.imageProcessor.imageProcessor.userManagement.model;
 
 import jakarta.persistence.*;
 
+
 @Entity
-@Table(name="users")
-public class User {
+@Table
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,10 +20,10 @@ public class User {
     @Column(name="email")
     private String email;
 
-    public User() {
+    public AppUser() {
     }
 
-    public User(String username, String password, String email) {
+    public AppUser(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
