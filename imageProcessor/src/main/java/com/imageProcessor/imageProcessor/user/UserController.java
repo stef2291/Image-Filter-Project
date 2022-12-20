@@ -54,7 +54,6 @@ public class UserController {
 
     @PostMapping("/logout")
     public Boolean logOutUser(@RequestBody Map<String, Long> user){
-//        User loggedInUser = userService.logOut(user.get("email"), user.get("password"));
 
         //we are logging out using given Id
         Optional<User> foundUser = userService.findById(user.get("userId"));

@@ -35,7 +35,6 @@ public class UserService {
         }
 
         return userRepository.save(user);
-//        return userRepository.findAll();
     }
 
     public User logIn(String email, String password){

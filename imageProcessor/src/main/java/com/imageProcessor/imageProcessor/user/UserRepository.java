@@ -2,13 +2,10 @@ package com.imageProcessor.imageProcessor.user;
 
 import org.springframework.stereotype.Repository;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
