@@ -44,9 +44,23 @@ public class Grayscale {
             }
 
             //finally, save the image, append black_and_white to the filename
+            //we need to check the file ending - is it jpeg, jpg, or png?
+            Integer neg_index=-4;
+            String file_ending="jpg";
 
-                f = new File(filepath.substring(0, filepath.length()-5) + "_black_and_white.jpg");
-                ImageIO.write(img, "jpg", f);
+            if(filepath.substring(filepath.length()-4,filepath.length()).equals("jpeg")){
+                neg_index = -5;
+                file_ending = "jpeg";
+            }else if(filepath.substring(filepath.length()-3,filepath.length()).equals("jpg")){
+                neg_index = -4;
+                file_ending = "jpg";
+            }else if(filepath.substring(filepath.length()-3,filepath.length()).equals("png")){
+                neg_index = -4;
+                file_ending = "png";
+            }
+
+                f = new File(filepath.substring(0, filepath.length() + neg_index) + "_black_and_white." + file_ending);
+                ImageIO.write(img, file_ending, f);
                 return f;
         }catch(IOException e){
             throw new IOException();
