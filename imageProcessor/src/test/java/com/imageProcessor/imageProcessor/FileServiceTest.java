@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imageProcessor.imageProcessor.file.File;
 import com.imageProcessor.imageProcessor.file.FileService;
+import com.imageProcessor.imageProcessor.user.User;
+import com.imageProcessor.imageProcessor.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +29,9 @@ public class FileServiceTest {
     private FileService fileService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -40,6 +45,8 @@ public class FileServiceTest {
         MockMultipartFile file = new MockMultipartFile("test.txt", "test.txt", "form-data", fis);
 
         //we need to create a user first in order to test, as user must exist to upload a file
+        User createdUser = new User("teddyp", "rubbishpass", "teddy@teddy.com");
+        userService.createUser(createdUser);
 
         // Send a POST request to the /files endpoint with the mock file
         mockMvc.perform(multipart("/files/1")

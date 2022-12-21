@@ -76,9 +76,9 @@ public class FileController {
     }
 
     //make image black and white using c++ executable
-    @GetMapping("/file/grayscale/{userId}/{filename:.+}")
+    @GetMapping("/file/{filterType}/{userId}/{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> serveBlackAndWhiteFile(@PathVariable Long  userId, @PathVariable String filename) throws IOException {
+    public ResponseEntity<Resource> serveBlackAndWhiteFile(@PathVariable String filterType, @PathVariable Long  userId, @PathVariable String filename) throws IOException {
 
         //confirm file exists, confirm it is associated with user
         File fileToSend = fileService.getOneUserFileByName(userId, filename);
@@ -87,7 +87,7 @@ public class FileController {
 
         //Process runs the executable, giving the filename and image processing type
         //process will save the file, which we can then return to the frontend
-        Process process = new ProcessBuilder("C:\\PathToExe\\MyExe.exe",fileToSend.getFilepath(),"greyscale").start();
+        Process process = new ProcessBuilder("C:\\PathToExe\\MyExe.exe",fileToSend.getFilepath(), filterType).start();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
