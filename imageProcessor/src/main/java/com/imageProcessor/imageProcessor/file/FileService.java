@@ -1,8 +1,8 @@
 package com.imageProcessor.imageProcessor.file;
 
 import com.imageProcessor.imageProcessor.storage.StorageService;
-import com.imageProcessor.imageProcessor.user.User;
-import com.imageProcessor.imageProcessor.user.UserService;
+import com.imageProcessor.imageProcessor.userManagement.model.AppUser;
+import com.imageProcessor.imageProcessor.userManagement.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,18 +14,19 @@ import java.util.Optional;
 @Service
 public class FileService {
     private final StorageService storageService;
-    private final UserService userService;
     private final FileRepository fileRepository;
 
+    private final UserRepo userRepo;
+
     @Autowired
-    public FileService(StorageService storageService, FileRepository fileRepository, UserService userService){//we also need the userService eventually
+    public FileService(StorageService storageService, FileRepository fileRepository, UserRepo userRepo){//we also need the userService eventually
         this.storageService = storageService;
         this.fileRepository = fileRepository;
-        this.userService = userService;
+        this.userRepo = userRepo;
     }
     public String saveFile(MultipartFile file, Long userId){
         //first check that user exists (to be implemented)
-        Optional<User> userExists = userService.findById(userId);
+        Optional<AppUser> userExists = userRepo.findById(userId);
 
         if(userExists.isPresent()){
             String filePath = storageService.store(file); //returns file url as a string (I think?)
@@ -46,10 +47,10 @@ public class FileService {
 
     public List<File> getAllUserFiles(Long userId){
         //when user is implemented, we want to do some checks here
-        Optional<User> userExists = userService.findById(userId);
+        Optional<AppUser> userExists = userRepo.findById(userId);
 
         if(userExists.isPresent()){
-            return fileRepository.findAllByUserId(userId); //when user implemented it will be findAllByUserId(userId)
+            return fileRepository.findAllByAppUserId(userId); //when user implemented it will be findAllByUserId(userId)
         }else{
             //user not found/validation failed, return an error
             throw new ResponseStatusException( HttpStatus.NOT_FOUND, "User not found");
@@ -57,10 +58,10 @@ public class FileService {
     }
 
     public File getOneUserFile(Long userId, Long fileId){
-        Optional<User> userExists = userService.findById(userId);
+        Optional<AppUser> userExists = userRepo.findById(userId);
 
         if(userExists.isPresent()){
-            Optional<File> foundFile =  fileRepository.findByIdAndUserId(fileId, userId); //when user implemented it will be findAllByUserId(userId)
+            Optional<File> foundFile =  fileRepository.findByIdAndAppUserId(fileId, userId); //when user implemented it will be findAllByUserId(userId)
             if(foundFile.isPresent()) return foundFile.get(); //We should do a check if the file exists as well, this can throw an exception
             else throw new ResponseStatusException( HttpStatus.NOT_FOUND, "File not found");
         }else{
@@ -70,7 +71,7 @@ public class FileService {
     }
 
     public File getOneUserFileByName(Long userId, String filename){
-        Optional<User> userExists = userService.findById(userId);
+        Optional<AppUser> userExists = userRepo.findById(userId);
 
         if(userExists.isPresent()){
             Optional<File> foundFile =  fileRepository.findByFilename(filename);//fileRepository.findByUserIdAndFilename(userId, filename) when implemented

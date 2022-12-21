@@ -1,7 +1,10 @@
 package com.imageProcessor.imageProcessor.userManagement.model;
 
 
+import com.imageProcessor.imageProcessor.file.File;
 import jakarta.persistence.*;
+
+import java.util.Collection;
 
 
 @Entity
@@ -20,6 +23,9 @@ public class AppUser {
 
     @Column(name="email")
     private String email;
+
+    @OneToMany
+    Collection<File> files;
 
     public AppUser() {
     }
