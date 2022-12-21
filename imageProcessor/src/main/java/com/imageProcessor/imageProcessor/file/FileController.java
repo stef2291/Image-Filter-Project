@@ -75,22 +75,42 @@ public class FileController {
 
     }
 
-    //make image black and white using c++ executable
-    @GetMapping("/file/{filterType}/{userId}/{filename:.+}")
+    //Get one IMAGE FILE
+    @GetMapping("/file/{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> serveBlackAndWhiteFile(@PathVariable String filterType, @PathVariable Long  userId, @PathVariable String filename) throws IOException {
+    public ResponseEntity<Resource> serveFileByFileName(@PathVariable String filename) {
+
+        Resource file = storageService.loadAsResource(filename);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+
+    }
+
+    //make image black and white using c++ executable
+//    @GetMapping("/file/{filterType}/{userId}/{filename:.+}")
+//    @PathVariable String filterType, @PathVariable Long  userId, @PathVariable String filename
+
+    //doesn't currently do ANYTHING
+    @GetMapping("/filter")
+    @ResponseBody
+    public String serveBlackAndWhiteFile() throws IOException {
 
         //confirm file exists, confirm it is associated with user
-        File fileToSend = fileService.getOneUserFileByName(userId, filename);
+//        File fileToSend = fileService.getOneUserFileByName(userId, filename);
 
-        Resource file = storageService.loadAsResource(fileToSend.getFilename());
+//        Resource file = storageService.loadAsResource(fileToSend.getFilename());
 
         //Process runs the executable, giving the filename and image processing type
         //process will save the file, which we can then return to the frontend
-        Process process = new ProcessBuilder("C:\\PathToExe\\MyExe.exe",fileToSend.getFilepath(), filterType).start();
+        String path = "/Users/eps09/Documents/finalGroupProject/Image-Filter-Project/imageProcessor/imageProcessor-main/bin/testProject_debug.exe";
+//        Process process = new ProcessBuilder(path, "file.png", "greyscale").start(); //,fileToSend.getFilepath(), filterType
 
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+//        Runtime.getRuntime().exec(path, null, null);
+
+//
+//        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+//                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        return "yo";
 
     }
 
