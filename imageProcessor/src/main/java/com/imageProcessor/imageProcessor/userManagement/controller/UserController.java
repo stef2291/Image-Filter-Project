@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/users")
@@ -25,28 +26,69 @@ public class UserController {
 
     //Saves new user in the database
     @PostMapping("/signup") //url:/signup?username={username}&passcode={password}&email={email}
-    public String signup(@RequestParam String username, @RequestParam String password, @RequestParam String email) {
+    public String signup(@RequestBody AppUser appUser) {
 
-        if (userRepo.findByUsername(username).isEmpty()) {
-            userRepo.save(new AppUser(username, password, email));
+        if (userRepo.findByUsername(appUser.getUsername()).isEmpty()) { //Tight coupling, Bad practice, fix it
+            userRepo.save(new AppUser(appUser.getUsername(), appUser.getPassword(), appUser.getEmail()));
             return "Signup Successful!";
-
 
         } else {
             return "Username Already Exists!";
         }
-
     }
 
     //checks if username and password match the database, sends success or failure
-    @GetMapping("/login") //
-    public Optional<AppUser> login(@RequestParam String username, @RequestParam String password) {
+    @PostMapping ("/login") //
+    public Optional<AppUser> login(@RequestBody AppUser appUser) {
 
-        Example<AppUser> loggedUser = Example.of(new AppUser(username, password, null));
+        Example<AppUser> loggedUser = Example.of(new AppUser(appUser.getUsername(), appUser.getPassword(), null));
 
         Optional<AppUser> actual = userRepo.findOne(loggedUser);
 
+        if (actual.isPresent()) {
+
+            String token = tokenGenerator();
+
+            actual.get().setToken(token); // this is a temporary instance of AppUser, does not affect database user
+            userRepo.save(actual.get());
+            actual.get().setPassword("meow");
+
+        }
+
         return actual;
+    } //Credentials are never a param. Authentication body base64 encoded
+    //when logged in successfully, receive a temporary code as authentication token
+    //token user relation saved in database for reference from other APIs
+
+    @PostMapping("/signout")
+    public Boolean signout(@RequestBody AppUser user) {
+
+        Optional<AppUser> userOptional = userRepo.findByToken(user.getToken());
+
+        if(userOptional.isPresent()) {
+            userOptional.get().setToken(null);
+            userRepo.save(userOptional.get());
+        }
+
+        return userOptional.isPresent();
+    }
+
+    //"ebalwvwqjg" 2
+    //"kauhhvyhyg" 3
+
+    private String tokenGenerator() {
+
+        int leftLimit = 97; // ascii letter a
+        int rightLimit = 122; //ascii letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+
+        String token = random.ints(leftLimit, rightLimit+1)
+                .limit(targetStringLength) //stream is not a list - check stream
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString(); //check StringBuilder (Java string concat is bad practice)
+
+        return token;
     }
 
     @DeleteMapping("/delete")

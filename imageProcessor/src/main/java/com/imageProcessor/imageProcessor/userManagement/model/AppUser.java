@@ -24,6 +24,9 @@ public class AppUser {
     @Column(name="email")
     private String email;
 
+    @Column(name="token")
+    private String token;
+
     @OneToMany
     Collection<File> files;
 
@@ -60,5 +63,13 @@ public class AppUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
