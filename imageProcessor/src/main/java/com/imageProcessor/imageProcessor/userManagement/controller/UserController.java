@@ -18,6 +18,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
+
+//Create a userService and put in the logic
+//Post
+
 public class UserController {
 
     @Autowired
@@ -28,6 +32,11 @@ public class UserController {
     public String signup(@RequestParam String username, @RequestParam String password, @RequestParam String email) {
 
         if (userRepo.findByUsername(username).isEmpty()) {
+
+            System.out.println(username);
+            System.out.println(password);
+            System.out.println(email);
+
             userRepo.save(new AppUser(username, password, email));
             return "Signup Successful!";
 
@@ -37,6 +46,8 @@ public class UserController {
         }
 
     }
+
+
 
     //checks if username and password match the database, sends success or failure
     @GetMapping("/login") //

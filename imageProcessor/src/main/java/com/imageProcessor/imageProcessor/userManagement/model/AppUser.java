@@ -1,6 +1,11 @@
 package com.imageProcessor.imageProcessor.userManagement.model;
 
+import com.imageProcessor.imageProcessor.file.File;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+
+import java.util.Collection;
+import java.util.Optional;
 
 
 @Entity
@@ -11,14 +16,17 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name="username")
+    @NotEmpty
     private String username;
 
-    @Column(name="password")
+    @NotEmpty
     private String password;
 
-    @Column(name="email")
+    @NotEmpty
     private String email;
+
+    @OneToMany
+    Collection <File> files;
 
     public AppUser() {
     }
