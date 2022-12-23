@@ -26,7 +26,7 @@ public class UserController {
 
     //Saves new user in the database
     @PostMapping("/signup") //url:/signup?username={username}&passcode={password}&email={email}
-    public String signup(@RequestBody AppUser appUser) {
+    public String signup(@RequestBody AppUser appUser) { //
 
         if (userRepo.findByUsername(appUser.getUsername()).isEmpty()) { //Tight coupling, Bad practice, fix it
             userRepo.save(new AppUser(appUser.getUsername(), appUser.getPassword(), appUser.getEmail()));
@@ -36,6 +36,8 @@ public class UserController {
             return "Username Already Exists!";
         }
     }
+
+    //renew token method needs an expiration date
 
     //checks if username and password match the database, sends success or failure
     @PostMapping ("/login") //
@@ -60,6 +62,23 @@ public class UserController {
     //when logged in successfully, receive a temporary code as authentication token
     //token user relation saved in database for reference from other APIs
 
+
+    //renew token
+    @PostMapping("/renew")
+    public Optional<AppUser> renew(@RequestBody String token) {
+
+        Optional<AppUser> userOptional = userRepo.findByToken(token);
+
+        if(userOptional.isPresent()) {
+            userOptional.get().setToken(null);
+            String newToken = tokenGenerator();
+            userOptional.get().setToken(newToken);
+            userRepo.save(userOptional.get());
+        }
+
+        return userOptional;
+    }
+
     @PostMapping("/signout")
     public Boolean signout(@RequestBody AppUser user) {
 
@@ -73,9 +92,8 @@ public class UserController {
         return userOptional.isPresent();
     }
 
-    //"ebalwvwqjg" 2
-    //"kauhhvyhyg" 3
 
+    //Mockito cannot test private methods
     private String tokenGenerator() {
 
         int leftLimit = 97; // ascii letter a
@@ -106,6 +124,8 @@ public class UserController {
             return "Username on Password Incorrect!";
         }
     }
+
+
 
     @PutMapping("/update")
     public String updateUser(@RequestParam String username, @RequestParam String password,
@@ -139,3 +159,5 @@ public class UserController {
     }
 
 }
+
+
